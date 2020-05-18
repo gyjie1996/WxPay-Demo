@@ -13,7 +13,7 @@ import java.util.Random;
  * @date 2020/5/15
  */
 public class UnifiedOrder {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         try {
             MyConfig config = new MyConfig();
             WXPay wxPay = new WXPay(config);
@@ -25,7 +25,7 @@ public class UnifiedOrder {
             map.put("notify_url", "");
             map.put("trade_type", "JSAPI");
             map.put("openid", "");
-            map.put("signType","MD5");
+            map.put("signType", "MD5");
             map.put("nonce_str", WXPayUtil.generateNonceStr());
             Map<String, String> result = wxPay.unifiedOrder(map);
             String resultCode = result.get("result_code");
@@ -47,15 +47,15 @@ public class UnifiedOrder {
              */
             //前台参数
             Map<String, String> m = new HashMap<String, String>(10);
-            m.put("appid",config.getAppID());
+            m.put("appid", config.getAppID());
             String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
-            m.put("timestamp",timestamp);
-            m.put("nonceStr",WXPayUtil.generateNonceStr());
+            m.put("timestamp", timestamp);
+            m.put("nonceStr", WXPayUtil.generateNonceStr());
             String prepayId = result.get("prepay_id");
             String packages = "prepay_id = " + prepayId;
-            m.put("package",packages);
-            m.put("signType","MD5");
-            m.put("paySign",WXPayUtil.generateSignature(m,config.getKey()));
+            m.put("package", packages);
+            m.put("signType", "MD5");
+            m.put("paySign", WXPayUtil.generateSignature(m, config.getKey()));
 
             System.out.println(m);
             System.out.println(resultCode);
@@ -67,7 +67,7 @@ public class UnifiedOrder {
     }
 
     private static synchronized String genOrderNo(String tag) {
-        return tag+System.currentTimeMillis() + ""  + (new Random(4));
+        return tag + System.currentTimeMillis() + "" + (new Random(4));
 
     }
 }

@@ -54,10 +54,10 @@ public class WXPayReport {
             this.primaryDomain = primaryDomain;
             this.firstConnectTimeoutMillis = firstConnectTimeoutMillis;
             this.firstReadTimeoutMillis = firstReadTimeoutMillis;
-            this.firstHasDnsError = firstHasDnsError?1:0;
-            this.firstHasConnectTimeout = firstHasConnectTimeout?1:0;
-            this.firstHasReadTimeout = firstHasReadTimeout?1:0;
-         }
+            this.firstHasDnsError = firstHasDnsError ? 1 : 0;
+            this.firstHasConnectTimeout = firstHasConnectTimeout ? 1 : 0;
+            this.firstHasReadTimeout = firstHasReadTimeout ? 1 : 0;
+        }
 
         @Override
         public String toString() {
@@ -84,21 +84,20 @@ public class WXPayReport {
          */
         public String toLineString(String key) {
             String separator = ",";
-            Object[] objects = new Object[] {
-                version, sdk, uuid, timestamp, elapsedTimeMillis,
+            Object[] objects = new Object[]{
+                    version, sdk, uuid, timestamp, elapsedTimeMillis,
                     firstDomain, primaryDomain, firstConnectTimeoutMillis, firstReadTimeoutMillis,
                     firstHasDnsError, firstHasConnectTimeout, firstHasReadTimeout
             };
             StringBuffer sb = new StringBuffer();
-            for(Object obj: objects) {
+            for (Object obj : objects) {
                 sb.append(obj).append(separator);
             }
             try {
                 String sign = WXPayUtil.HMACSHA256(sb.toString(), key);
                 sb.append(sign);
                 return sb.toString();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 return null;
             }
 
@@ -110,8 +109,8 @@ public class WXPayReport {
     // private static final String REPORT_URL = "http://127.0.0.1:5000/test";
 
 
-    private static final int DEFAULT_CONNECT_TIMEOUT_MS = 6*1000;
-    private static final int DEFAULT_READ_TIMEOUT_MS = 8*1000;
+    private static final int DEFAULT_CONNECT_TIMEOUT_MS = 6 * 1000;
+    private static final int DEFAULT_READ_TIMEOUT_MS = 8 * 1000;
 
     private LinkedBlockingQueue<String> reportMsgQueue = null;
     private WXPayConfig config;
@@ -146,23 +145,21 @@ public class WXPayReport {
                                 String msg = null;
                                 sb.append(firstMsg); //会阻塞至有消息
                                 int remainNum = config.getReportBatchSize() - 1;
-                                for (int j=0; j<remainNum; ++j) {
+                                for (int j = 0; j < remainNum; ++j) {
                                     WXPayUtil.getLogger().info("try get remain report msg");
                                     // msg = reportMsgQueue.poll();  // 不阻塞了
                                     msg = reportMsgQueue.take();
                                     WXPayUtil.getLogger().info("get remain report msg: {}", msg);
                                     if (msg == null) {
                                         break;
-                                    }
-                                    else {
+                                    } else {
                                         sb.append("\n");
                                         sb.append(msg);
                                     }
                                 }
                                 // 上报
                                 WXPayReport.httpRequest(sb.toString(), DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIMEOUT_MS);
-                            }
-                            catch (Exception ex) {
+                            } catch (Exception ex) {
                                 WXPayUtil.getLogger().warn("report fail. reason: {}", ex.getMessage());
                             }
                         }
@@ -216,8 +213,7 @@ public class WXPayReport {
             public void run() {
                 try {
                     httpRequest(data, DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIMEOUT_MS);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     WXPayUtil.getLogger().warn("report fail. reason: {}", ex.getMessage());
                 }
             }
@@ -226,13 +222,14 @@ public class WXPayReport {
 
     /**
      * http 请求
+     *
      * @param data
      * @param connectTimeoutMs
      * @param readTimeoutMs
      * @return
      * @throws Exception
      */
-    private static String httpRequest(String data, int connectTimeoutMs, int readTimeoutMs) throws Exception{
+    private static String httpRequest(String data, int connectTimeoutMs, int readTimeoutMs) throws Exception {
         BasicHttpClientConnectionManager connManager;
         connManager = new BasicHttpClientConnectionManager(
                 RegistryBuilder.<ConnectionSocketFactory>create()
