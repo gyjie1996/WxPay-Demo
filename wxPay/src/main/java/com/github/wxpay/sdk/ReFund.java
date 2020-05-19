@@ -4,6 +4,7 @@ import com.github.wxpay.utils.MyConfig;
 import com.github.wxpay.utils.WXPay;
 import com.github.wxpay.utils.WXPayConstants;
 import com.github.wxpay.utils.WXPayUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class ReFund {
     }
 
     private static synchronized String genOrderNo(String tag) {
-        return tag + System.currentTimeMillis() + "" + (new Random(4));
+        return tag + System.currentTimeMillis() + "" + (RandomStringUtils.randomNumeric(4));
 
     }
 }
